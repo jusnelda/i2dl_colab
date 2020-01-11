@@ -70,7 +70,8 @@ class Solver(object):
         best_acc = 0.0
         #[inputs, labels] = train_loader.dataset
         for epoch in range(num_epochs):
-        
+            running_loss = 0.0
+            running_corrects = 0
             # T R A I N I N G
             # for iteration in range(iter_per_epoch):
             for iteration, (inputs, labels) in enumerate(train_loader):
