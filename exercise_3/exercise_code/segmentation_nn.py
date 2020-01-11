@@ -12,10 +12,12 @@ class SegmentationNN(nn.Module):
         #######################################################################
         #                             YOUR CODE                               #
         ######################################################################
-        self.model_fcn = models.segmentation.fcn_resnet101(pretrained=True)
+        # self.model_fcn = models.segmentation.fcn_resnet101(pretrained=True)
+        self.model_vgg = models.vgg11(pretrained=True).features
+        self.fcn = nn.Conv2d(512, num_classes, 1)
         # update number of classes from 21 to 23
-        self.model_fcn.classifier[4] = nn.Conv2d(512, num_classes, kernel_size=(1, 1), stride=(1, 1))
-        self.deconv = nn.ConvTranspose2d(num_classes, num_classes, kernel_size=(3, 3), stride=(1, 1))
+        # self.model_fcn.classifier[4] = nn.Conv2d(512, num_classes, kernel_size=(1, 1), stride=(1, 1))
+        # self.deconv = nn.ConvTranspose2d(num_classes, num_classes, kernel_size=(3, 3), stride=(1, 1))
         #######################################################################
         #                           END OF YOUR CODE                          #
         #######################################################################
@@ -33,19 +35,16 @@ class SegmentationNN(nn.Module):
         #######################################################################
         [N, C, H, W] = x.size()  # N = batch size, C = number of channels, H = height, W = width
         # upscale network in order to achieve desired output dimensions (N, num_classes, H, W)
-        #print(C*H*W)
-        # print(x.size())
         # deconv = nn.ConvTranspose2d(C, int(C*H*W), kernel_size=(1, 1), stride=(1, 1))
-        upsample = nn.Upsample(scale_factor= H * W, mode='bilinear', align_corners=True)
-        # my_model = nn.Sequential(
-        #                         self.model_fcn,
-        #                         self.upsample
-        #                         )
-        # out = self.model_fcn(x)
-        x = self.model_fcn(x)
-        x = self.deconv(x)
-        #x = upsample(x)
-        # x = my_model(x)
+        # upsample = nn.Upsample(scale_factor= H * W, mode='bilinear', align_corners=True)
+
+        x_inputs = x
+        # x = self.model_fcn(x)
+        # x = self.deconv(x)
+        x = self.model_vgg(x)
+        x = self.fcn(x)
+        x = nn.functional.upsample(x, x_inputs.size()[2:], mode='bilinear', align_corners=True).contiguous()
+
         #######################################################################
         #                           END OF YOUR CODE                          #
         #######################################################################
