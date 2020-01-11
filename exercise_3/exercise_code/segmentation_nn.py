@@ -32,7 +32,7 @@ class SegmentationNN(nn.Module):
         #######################################################################
         [N, C, H, W] = x.size()  # N = batch size, C = number of channels, H = height, W = width
         # upscale network in order to achieve desired output dimensions (N, num_classes, H, W)
-        deconv = nn.ConvTranspose2d(C, x.size()[1:], kernel_size=(1, 1), stride=(1, 1))
+        deconv = nn.ConvTranspose2d(C, int(C*H*W), kernel_size=(1, 1), stride=(1, 1))
         upsample = nn.Upsample(scale_factor= H * W, mode='bilinear', align_corners=True)
         # my_model = nn.Sequential(
         #                         self.model_fcn,
