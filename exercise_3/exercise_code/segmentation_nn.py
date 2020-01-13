@@ -40,7 +40,7 @@ class SegmentationNN(nn.Module):
 
         x_inputs = x
         x = self.model_fcn(x)['out']
-         x = self.deconv(x)
+        x = self.deconv(x)
         #x = self.model_vgg(x)
         #x = self.fcn(x)
         x = nn.functional.upsample(x, x_inputs.size()[2:], mode='bilinear', align_corners=True).contiguous()
