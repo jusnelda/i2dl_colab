@@ -77,10 +77,10 @@ class Solver(object):
             for iteration, (inputs, labels) in enumerate(train_loader):
                 #[inputs, labels] = train_loader.dataset
                 #for inputs, labels in train_loader:
-                #inputs = inputs.to(device)
-                #labels = labels.to(device)
+                inputs = inputs.to(device)
+                labels = labels.to(device)
                 # foward pass / prediction
-                output = model.forward(inputs)
+                output = model(inputs)
                 # loss
                 train_loss = self.loss_func(output, labels)
                 self.train_loss_history.append(train_loss)
@@ -106,7 +106,7 @@ class Solver(object):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 # foward pass / prediction
-                output = model.forward(inputs)
+                output = model(inputs)
                 # loss
                 val_loss = self.loss_func(output, labels)
                 self.val_loss_history.append(val_loss)
