@@ -42,6 +42,7 @@ class Solver(object):
         self._reset_histories()
         iter_per_epoch = len(train_loader)
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        print('Running on:', device)
         model.to(device)
 
         print('START TRAIN.')
@@ -74,7 +75,7 @@ class Solver(object):
             running_corrects = 0
             # T R A I N I N G
             # for iteration in range(iter_per_epoch):
-            for iteration, (inputs, labels) in enumerate(train_loader):
+            for iteration, (inputs, labels) in enumerate(train_loader, 1):
                 #[inputs, labels] = train_loader.dataset
                 #for inputs, labels in train_loader:
                 inputs = inputs.to(device)
@@ -83,18 +84,18 @@ class Solver(object):
                 output = model(inputs)
                 # loss
                 train_loss = self.loss_func(output, labels)
-                self.train_loss_history.append(train_loss)
                 train_loss.backward()
                 # optimize
                 optim.step()
+                self.train_loss_history.append(train_loss.data)
                 # Maybe print training loss
                 if iteration % log_nth == 0:
                     print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(iteration, num_iterations, train_loss))
 
-                # statistics
-                _, preds = torch.max(output, 1)
-                running_loss += train_loss.item() * inputs.size(0)
-                running_corrects += torch.sum(preds == labels.data)
+            # statistics
+            _, preds = torch.max(output, 1)
+            running_loss += train_loss.item() * inputs.size(0)
+            running_corrects += torch.sum(preds == labels.data)
 
             # Accuracy
             train_epoch_loss = running_loss / len(train_loader.dataset)
@@ -102,6 +103,7 @@ class Solver(object):
             self.train_acc_history.append(train_epoch_acc)
 
             # V A L I D A T I O N
+            model.eval()
             for inputs, labels in val_loader:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
@@ -109,7 +111,7 @@ class Solver(object):
                 output = model(inputs)
                 # loss
                 val_loss = self.loss_func(output, labels)
-                self.val_loss_history.append(val_loss)
+                self.val_loss_history.append(val_loss.data)
                 # statistics
                 _, preds = torch.max(output, 1)
                 running_loss += val_loss.item() * inputs.size(0)
@@ -122,7 +124,7 @@ class Solver(object):
             if val_epoch_acc > best_acc:
                 best_acc = val_epoch_acc
          #       best_model_wts = copy.deepcopy(model.state_dict())
-                self.val_acc_history.append(val_epoch_acc)
+            self.val_acc_history.append(val_epoch_acc)
 
             print('[Epoch {}/{}     TRAIN acc/loss: {:.4f}/{:.4f}]'.format(epoch, num_epochs - 1, train_epoch_acc, train_loss))
             print('[Epoch {}/{}     VAL acc/loss: {:.4f}/{:.4f}]'.format(epoch, num_epochs - 1, val_epoch_acc, val_loss))
