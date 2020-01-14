@@ -12,7 +12,7 @@ class SegmentationNN(nn.Module):
         #######################################################################
         #                             YOUR CODE                               #
         ######################################################################
-        self.model_fcn = models.segmentation.fcn_resnet101(pretrained=True).eval()
+        self.model_fcn = models.segmentation.fcn_resnet101(pretrained=True)
         #self.model_vgg = models.vgg11(pretrained=True).features
         #self.fcn = nn.Conv2d(512, num_classes, 1)
         # update number of classes from 21 to 23
