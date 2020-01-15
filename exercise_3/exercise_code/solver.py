@@ -113,7 +113,7 @@ class Solver(object):
                 val_acc = np.mean((pred == labels).data.cpu().numpy())
                 val_accs.append(val_acc)
                 if val_acc > best_val_acc:
-                    best_val_acc = val_epoch_acc
+                    best_val_acc = val_acc
 
 
             val_acc, val_loss = np.mean(val_accs), np.mean(val_losses)
