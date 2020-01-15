@@ -15,7 +15,7 @@ class SegmentationNN(nn.Module):
         self.model_fcn = models.segmentation.fcn_resnet101(pretrained=True)#.eval()
         # update number of classes from 21 to 23
         self.model_fcn.classifier[4] = nn.Conv2d(512, num_classes, kernel_size=(1, 1), stride=(1, 1))
-        self.upconv = nn.ConvTranspose2d(num_classes, num_classes, kernel_size=(3, 3), stride=(1, 1))
+        # self.upconv = nn.ConvTranspose2d(num_classes, num_classes, kernel_size=(3, 3), stride=(1, 1))
         #######################################################################
         #                           END OF YOUR CODE                          #
         #######################################################################
@@ -36,8 +36,8 @@ class SegmentationNN(nn.Module):
         # upsample = nn.Upsample(scale_factor= H * W, mode='bilinear', align_corners=True)
         x_inputs = x
         x = self.model_fcn(x)['out']
-        x = self.upconv(x)
-        x = nn.functional.upsample(x, x_inputs.size()[2:], mode='bilinear', align_corners=True).contiguous()
+        # x = self.upconv(x)
+        # x = nn.functional.upsample(x, x_inputs.size()[2:], mode='bilinear', align_corners=True).contiguous()
 
         #######################################################################
         #                           END OF YOUR CODE                          #

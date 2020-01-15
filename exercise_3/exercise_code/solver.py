@@ -76,18 +76,20 @@ class Solver(object):
                 labels = labels.to(device)
                 # zero the parameter gradients
                 optim.zero_grad()
-                # foward pass / prediction
-                output = model(inputs)
-                # loss
-                train_loss = self.loss_func(output, labels)
-                train_loss.backward()
-                # optimize
-                optim.step()
-                self.train_loss_history.append(train_loss.data.cpu().numpy())
-                t = epoch * iter_per_epoch + iteration
-                # Maybe print training loss
-                if t % log_nth == 0:
-                    print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(t, num_iterations, self.train_loss_history[-1]))
+                with torch.set_grad_enabled(True):
+                    # foward pass / prediction
+                    output = model(inputs)
+                    print('Out Shape:', out.shape)
+                    # loss
+                    train_loss = self.loss_func(output, labels)
+                    train_loss.backward()
+                    # optimize
+                    optim.step()
+                    self.train_loss_history.append(train_loss.data.cpu().numpy())
+                    t = epoch * iter_per_epoch + iteration
+                    # Maybe print training loss
+                    if t % log_nth == 0:
+                        print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(t, num_iterations, self.train_loss_history[-1]))
 
             # Accuracy per minibatch
             _, preds = torch.max(output, 1)
