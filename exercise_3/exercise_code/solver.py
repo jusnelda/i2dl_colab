@@ -86,7 +86,7 @@ class Solver(object):
                 t = epoch * iter_per_epoch + iteration
                 # Maybe print training loss
                 if t % log_nth == 0:
-                    print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(t+1, num_iterations, self.train_loss_history[-1]))
+                    print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(t, num_iterations, self.train_loss_history[-1]))
 
             # Accuracy
             _, preds = torch.max(output, 1)
@@ -106,7 +106,7 @@ class Solver(object):
                 output = model(inputs)
                 # loss
                 val_loss = self.loss_func(output, labels)
-                val_losses.append(loss.data.cpu().numpy())
+                val_losses.append(val_loss.data.cpu().numpy())
 
                 # Accuracy
                 _, pred = torch.max(output, 1)
