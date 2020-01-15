@@ -69,12 +69,13 @@ class Solver(object):
         num_iterations = num_epochs * iter_per_epoch
         best_val_acc = 0.0
         for epoch in range(num_epochs):
-            running_loss = 0.0
-            running_corrects = 0
+
             # T R A I N I N G
             for iteration, (inputs, labels) in enumerate(train_loader, 1):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
+                # zero the parameter gradients
+                optim.zero_grad()
                 # foward pass / prediction
                 output = model(inputs)
                 # loss
@@ -88,40 +89,39 @@ class Solver(object):
                 if t % log_nth == 0:
                     print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(t, num_iterations, self.train_loss_history[-1]))
 
-            # Accuracy
+            # Accuracy per minibatch
             _, preds = torch.max(output, 1)
             targets_mask = labels>= 0
             train_acc = np.mean((preds == labels)[targets_mask].data.cpu().numpy())
-
             self.train_acc_history.append(train_acc)
 
             # V A L I D A T I O N
             val_losses = []
             val_accs = []
             #model.eval()
-            for inputs, labels in val_loader:
-                inputs = inputs.to(device)
-                labels = labels.to(device)
-                # foward pass / prediction
-                output = model(inputs)
-                # loss
-                val_loss = self.loss_func(output, labels)
-                val_losses.append(val_loss.data.cpu().numpy())
+            with torch.no_grad():
+                for inputs, labels in val_loader:
+                    inputs = inputs.to(device)
+                    labels = labels.to(device)
+                    # foward pass / prediction
+                    output = model(inputs)
+                    # loss
+                    val_loss = self.loss_func(output, labels)
+                    val_losses.append(val_loss.data.cpu().numpy())
 
-                # Accuracy
-                _, pred = torch.max(output, 1)
-                val_acc = np.mean((pred == labels).data.cpu().numpy())
-                val_accs.append(val_acc)
-                if val_acc > best_val_acc:
-                    best_val_acc = val_acc
-
+                    # Accuracy
+                    _, pred = torch.max(output, 1)
+                    val_acc = np.mean((pred == labels).data.cpu().numpy())
+                    val_accs.append(val_acc)
 
             val_acc, val_loss = np.mean(val_accs), np.mean(val_losses)
             self.val_acc_history.append(val_acc)
+            if val_acc > best_val_acc:
+                best_val_acc = val_acc
             self.val_loss_history.append(val_loss)
-            print('[Epoch {}/{}     TRAIN acc/loss: {:.4f}/{:.4f}]'.format(epoch, num_epochs - 1, self.train_acc_history[-1], self.train_loss_history[-1]))
-            print('[Epoch {}/{}     VAL acc/loss: {:.4f}/{:.4f}]'.format(epoch, num_epochs - 1, val_acc, self.val_loss_history[-1]))
-            print('-' * 10)
+            print('[Epoch {}/{}]     TRAIN acc/loss: {:.4f}/{:.4f}'.format(epoch, num_epochs - 1, self.train_acc_history[-1], self.train_loss_history[-1]))
+            print('[Epoch {}/{}]     VAL acc/loss: {:.4f}/{:.4f}'.format(epoch, num_epochs - 1, val_acc, self.val_loss_history[-1]))
+            print('-' * 30)
         print('Best Accuracy: {:4f}'.format(best_val_acc))
         #######################################################################
         #                             END OF YOUR CODE                        #
