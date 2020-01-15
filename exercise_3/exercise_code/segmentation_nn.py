@@ -13,6 +13,8 @@ class SegmentationNN(nn.Module):
         #                             YOUR CODE                               #
         ######################################################################
         self.model_fcn = models.segmentation.fcn_resnet101(pretrained=True)#.eval()
+        for param in model_fcn.parameters():
+            param.requires_grad = False
         # update number of classes from 21 to 23
         self.model_fcn.classifier[4] = nn.Conv2d(512, num_classes, kernel_size=(1, 1), stride=(1, 1))
         # self.upconv = nn.ConvTranspose2d(num_classes, num_classes, kernel_size=(3, 3), stride=(1, 1))
