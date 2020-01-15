@@ -13,7 +13,7 @@ class SegmentationNN(nn.Module):
         #                             YOUR CODE                               #
         ######################################################################
         self.model_ft = models.resnet18(pretrained=True)
-        num_ftrs = model_ft.fc.in_features
+        num_ftrs = self.model_ft.fc.in_features
         self.model_ft.fc = nn.Linear(num_ftrs, num_classes)
         self.upconv = nn.ConvTranspose2d(num_classes, num_classes, kernel_size=(3, 3), stride=(1, 1))
         #self.model_fcn = models.segmentation.fcn_resnet101(pretrained=True).eval()
@@ -43,7 +43,7 @@ class SegmentationNN(nn.Module):
         # upsample = nn.Upsample(scale_factor= H * W, mode='bilinear', align_corners=True)
 
         x_inputs = x
-        x = self.model_fcn(x)['out']
+        x = self.model_ft(x)['out']
         x = self.upconv(x)
         #x = self.model_vgg(x)
         #x = self.fcn(x)
