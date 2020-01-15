@@ -79,7 +79,7 @@ class Solver(object):
                 with torch.set_grad_enabled(True):
                     # foward pass / prediction
                     output = model(inputs)
-                    print('Out Shape:', out.shape)
+                    print('Out Shape:', output.shape)
                     # loss
                     train_loss = self.loss_func(output, labels)
                     train_loss.backward()
