@@ -112,7 +112,7 @@ class Solver(object):
                 _, pred = torch.max(output, 1)
                 val_acc = np.mean((pred == labels).data.cpu().numpy())
                 val_accs.append(val_acc)
-                if val_acc > best_acc:
+                if val_acc > best_val_acc:
                     best_val_acc = val_epoch_acc
 
 
@@ -122,7 +122,7 @@ class Solver(object):
             print('[Epoch {}/{}     TRAIN acc/loss: {:.4f}/{:.4f}]'.format(epoch, num_epochs - 1, self.train_acc_history[-1], self.train_loss_history[-1]))
             print('[Epoch {}/{}     VAL acc/loss: {:.4f}/{:.4f}]'.format(epoch, num_epochs - 1, val_acc, self.val_loss_history[-1]))
             print('-' * 10)
-        print('Best Accuracy: {:4f}'.format(best_acc))
+        print('Best Accuracy: {:4f}'.format(best_val_acc))
         #######################################################################
         #                             END OF YOUR CODE                        #
         #######################################################################
