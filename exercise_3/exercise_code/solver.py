@@ -113,7 +113,6 @@ class Solver(object):
                     # loss
                     val_loss = self.loss_func(output, labels)
                     val_losses.append(val_loss.data.cpu().numpy())
-                    writer.add_scalar('Loss/val', self.val_loss_history[-1], iteration)
 
                     # Accuracy
                     _, pred = torch.max(output, 1)
@@ -122,6 +121,7 @@ class Solver(object):
 
             val_acc, val_loss = np.mean(val_accs), np.mean(val_losses)
             self.val_acc_history.append(val_acc)
+            writer.add_scalar('Loss/val', self.val_loss_history[-1], iteration)
             if val_acc > best_val_acc:
                 best_val_acc = val_acc
             self.val_loss_history.append(val_loss)
