@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+from torch.utils.tensorboard import SummaryWriter
 
 
 class Solver(object):
@@ -66,6 +67,7 @@ class Solver(object):
         #   [Epoch 1/5] VAL   acc/loss: 0.539/1.310                           #
         #   ...                                                               #
         #######################################################################
+        writer = SummaryWriter()
         num_iterations = num_epochs * iter_per_epoch
         best_val_acc = 0.0
         for epoch in range(num_epochs):
@@ -82,6 +84,7 @@ class Solver(object):
                     # print('Out Shape:', output.shape)
                     # loss
                     train_loss = self.loss_func(output, labels)
+                    writer.add_scalar('Loss/train', train_loss.data.cpu().numpy(), iteration)
                     train_loss.backward()
                     # optimize
                     optim.step()
@@ -109,6 +112,7 @@ class Solver(object):
                     output = model(inputs)
                     # loss
                     val_loss = self.loss_func(output, labels)
+                    writer.add_scalar('Loss/val', val_loss.data.cpu().numpy(), iteration)
                     val_losses.append(val_loss.data.cpu().numpy())
 
                     # Accuracy
@@ -121,8 +125,8 @@ class Solver(object):
             if val_acc > best_val_acc:
                 best_val_acc = val_acc
             self.val_loss_history.append(val_loss)
-            print('[Epoch {}/{}]     TRAIN acc/loss: {:.4f}/{:.4f}'.format(epoch, num_epochs - 1, self.train_acc_history[-1], self.train_loss_history[-1]))
-            print('[Epoch {}/{}]     VAL acc/loss: {:.4f}/{:.4f}'.format(epoch, num_epochs - 1, val_acc, self.val_loss_history[-1]))
+            print('[Epoch {}/{}]     TRAIN acc/loss: {:.4f}/{:.4f}'.format(epoch + 1, num_epochs, self.train_acc_history[-1], self.train_loss_history[-1]))
+            print('[Epoch {}/{}]     VAL acc/loss: {:.4f}/{:.4f}'.format(epoch + 1, num_epochs, val_acc, self.val_loss_history[-1]))
             print('-' * 30)
         print('Best Accuracy: {:4f}'.format(best_val_acc))
         #######################################################################
