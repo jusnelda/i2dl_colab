@@ -89,7 +89,7 @@ class Solver(object):
                     print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(t+1, num_iterations, self.train_loss_history[-1]))
 
             # Accuracy
-            _, preds = torch.max(outputs, 1)
+            _, preds = torch.max(output, 1)
             targets_mask = targets >= 0
             train_acc = np.mean((preds == targets)[targets_mask].data.cpu().numpy())
 
