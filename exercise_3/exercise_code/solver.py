@@ -90,8 +90,8 @@ class Solver(object):
 
             # Accuracy
             _, preds = torch.max(output, 1)
-            targets_mask = targets >= 0
-            train_acc = np.mean((preds == targets)[targets_mask].data.cpu().numpy())
+            targets_mask = labels>= 0
+            train_acc = np.mean((preds == labels)[targets_mask].data.cpu().numpy())
 
             self.train_acc_history.append(train_acc)
 
@@ -110,7 +110,7 @@ class Solver(object):
 
                 # Accuracy
                 _, pred = torch.max(output, 1)
-                val_acc = np.mean((pred == target).data.cpu().numpy())
+                val_acc = np.mean((pred == labels).data.cpu().numpy())
                 val_accs.append(val_acc)
                 if val_acc > best_acc:
                     best_val_acc = val_epoch_acc
