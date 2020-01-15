@@ -84,11 +84,11 @@ class Solver(object):
                     # print('Out Shape:', output.shape)
                     # loss
                     train_loss = self.loss_func(output, labels)
-                    writer.add_scalar('Loss/train', train_loss.data.cpu().numpy(), iteration)
                     train_loss.backward()
                     # optimize
                     optim.step()
                     self.train_loss_history.append(train_loss.data.cpu().numpy())
+                    writer.add_scalar('Loss/train', self.train_loss_history[-1], iteration)
                     t = epoch * iter_per_epoch + iteration
                     # Maybe print training loss
                     if t % log_nth == 0:
@@ -112,8 +112,8 @@ class Solver(object):
                     output = model(inputs)
                     # loss
                     val_loss = self.loss_func(output, labels)
-                    writer.add_scalar('Loss/val', val_loss.data.cpu().numpy(), iteration)
                     val_losses.append(val_loss.data.cpu().numpy())
+                    writer.add_scalar('Loss/val', self.val_loss_history[-1], iteration)
 
                     # Accuracy
                     _, pred = torch.max(output, 1)
