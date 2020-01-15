@@ -43,7 +43,7 @@ class SegmentationNN(nn.Module):
         # upsample = nn.Upsample(scale_factor= H * W, mode='bilinear', align_corners=True)
 
         x_inputs = x
-        x = self.model_ft(x)['out']
+        x = self.model_ft(x)#['out']
         x = self.upconv(x)
         #x = self.model_vgg(x)
         #x = self.fcn(x)
