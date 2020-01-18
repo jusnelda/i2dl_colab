@@ -28,7 +28,7 @@ class KeypointModel(nn.Module):
         self.conv4 = nn.Conv2d(128, 256, 1)
         # ACTIVATION
         self.elu = nn.ELU()
-        self.relu = ReLU()
+        self.relu = nn.ReLU()
         # POOLING
         self.maxpool = nn.MaxPool2d(2, stride=2)
         # DROPOUT
