@@ -1,6 +1,8 @@
 from torch.utils.data import Dataset
 import pandas as pd
 import numpy as np
+from .data_utils import get_image
+from .data_utils import get_keypoints
 
 
 class FacialKeypointsDataset(Dataset):
@@ -40,14 +42,8 @@ class FacialKeypointsDataset(Dataset):
         #        {'image': image of shape [C, H, W],                          #
         #         'keypoints': keypoints of shape [num_keypoints, 2]}         #
         #######################################################################
-        # if torch.is_tensor(idx):
-        #     idx = idx.tolist()
-
-        img_name = self.key_pts_frame.iloc[idx, 0]
-        image = io.imread(img_name)
-        key_pts = self.key_pts_frame.iloc[idx, 1:]
-        key_pts = np.array([key_pts])
-        key_pts = key_pts.astype('float').reshape(-1, 2)
+        image = get_image(idx, self.key_pts_frame)
+        key_pts = get_keypoints(idx, self.key_pts_frame)
         sample = {'image': image, 'key_pts': key_pts}
 
 
