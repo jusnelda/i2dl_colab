@@ -4,7 +4,7 @@ import numpy as np
 
 
 class FacialKeypointsDataset(Dataset):
-    """Face Landmarks dataset."""
+    """Face key_pts dataset."""
 
     def __init__(self, csv_file, transform=None):
         """
@@ -26,8 +26,7 @@ class FacialKeypointsDataset(Dataset):
         # Return the length of the dataset                                    #
         #######################################################################
 
-        pass
-
+        return len(self.key_pts_frame)
         #######################################################################
         #                             END OF YOUR CODE                        #
         #######################################################################
@@ -41,7 +40,15 @@ class FacialKeypointsDataset(Dataset):
         #        {'image': image of shape [C, H, W],                          #
         #         'keypoints': keypoints of shape [num_keypoints, 2]}         #
         #######################################################################
+         if torch.is_tensor(idx):
+            idx = idx.tolist()
 
+        img_name = self.key_pts_frame.iloc[idx, 0])
+        image = io.imread(img_name)
+        key_pts = self.key_pts_frame.iloc[idx, 1:]
+        key_pts = np.array([key_pts])
+        key_pts = key_pts.astype('float').reshape(-1, 2)
+        sample = {'image': image, 'key_pts': key_pts}
 
 
         #######################################################################
