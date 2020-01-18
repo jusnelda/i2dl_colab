@@ -40,10 +40,10 @@ class FacialKeypointsDataset(Dataset):
         #        {'image': image of shape [C, H, W],                          #
         #         'keypoints': keypoints of shape [num_keypoints, 2]}         #
         #######################################################################
-         if torch.is_tensor(idx):
+        if torch.is_tensor(idx):
             idx = idx.tolist()
 
-        img_name = self.key_pts_frame.iloc[idx, 0])
+        img_name = self.key_pts_frame.iloc[idx, 0]
         image = io.imread(img_name)
         key_pts = self.key_pts_frame.iloc[idx, 1:]
         key_pts = np.array([key_pts])
