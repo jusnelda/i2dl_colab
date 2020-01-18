@@ -78,7 +78,7 @@ class KeypointModel(nn.Module):
         x = self.dense2(x)      # 22 Dense_2
         x = self.relu(x)        # 23 Activation_6
         x = self.dropout6(x)    # 24 Dropout_6
-        x = self.dense(3)       # 25 Dense_3
+        x = self.dense3(x)       # 25 Dense_3
 
         #######################################################################
         #                           END OF YOUR CODE                          #
