@@ -42,7 +42,8 @@ class FacialKeypointsDataset(Dataset):
         #        {'image': image of shape [C, H, W],                          #
         #         'keypoints': keypoints of shape [num_keypoints, 2]}         #
         #######################################################################
-        image = get_image(idx, self.key_pts_frame)
+        # image = get_image(idx, self.key_pts_frame)
+        image = np.expand_dims(get_image(idx, self.key_pts_frame),axis=0)
         key_pts = get_keypoints(idx, self.key_pts_frame)
         sample = {'image': image, 'keypoints': key_pts}
 
