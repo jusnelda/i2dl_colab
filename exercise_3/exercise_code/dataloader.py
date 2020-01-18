@@ -44,7 +44,7 @@ class FacialKeypointsDataset(Dataset):
         #######################################################################
         image = get_image(idx, self.key_pts_frame)
         key_pts = get_keypoints(idx, self.key_pts_frame)
-        sample = {'image': image, 'key_pts': key_pts}
+        sample = {'image': image, 'keypoints': key_pts}
 
 
         #######################################################################
