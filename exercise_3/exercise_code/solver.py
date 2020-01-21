@@ -109,7 +109,7 @@ class Solver(object):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 # foward pass / prediction
-                output = model(inputs)
+                output = model.forward(inputs)
                 # loss
                 val_loss = self.loss_func(output, labels)
                 val_losses.append(val_loss.data.cpu().numpy())
@@ -118,17 +118,19 @@ class Solver(object):
                 _, pred = torch.max(output, 1)
                 val_acc = np.mean((pred == labels).data.cpu().numpy())
                 val_accs.append(val_acc)
+
+
             model.train()
             val_acc, val_loss = np.mean(val_accs), np.mean(val_losses)
             self.val_acc_history.append(val_acc)
-            if val_acc > best_val_acc:
-                best_val_acc = val_acc
+            # if val_acc > best_val_acc:
+            #     best_val_acc = val_acc
             self.val_loss_history.append(val_loss)
             writer.add_scalar('Loss/val', self.val_loss_history[-1], iteration)
             print('[Epoch {}/{}]     TRAIN acc/loss: {:.4f}/{:.4f}'.format(epoch + 1, num_epochs, self.train_acc_history[-1], self.train_loss_history[-1]))
             print('[Epoch {}/{}]     VAL acc/loss: {:.4f}/{:.4f}'.format(epoch + 1, num_epochs, val_acc, self.val_loss_history[-1]))
             print('-' * 30)
-        print('Best Accuracy: {:4f}'.format(best_val_acc))
+        # print('Best Accuracy: {:4f}'.format(best_val_acc))
         #######################################################################
         #                             END OF YOUR CODE                        #
         #######################################################################
