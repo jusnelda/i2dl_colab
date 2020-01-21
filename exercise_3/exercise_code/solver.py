@@ -89,7 +89,7 @@ class Solver(object):
                 optim.step()
 
                 self.train_loss_history.append(loss.data.cpu().numpy())
-                writer.add_scalar('Loss/train', self.train_loss_history[-1], iteration)
+                writer.add_scalar('Train Loss', self.train_loss_history[-1], iteration)
                 # t = epoch * iter_per_epoch + iteration
                 # Maybe print training loss
                 # if t % log_nth == 0:
@@ -107,7 +107,7 @@ class Solver(object):
             train_acc = np.mean((preds == labels)[targets_mask].data.cpu().numpy())
             self.train_acc_history.append(train_acc)
             if log_nth:
-                print('[Epoch {}/{}] TRAIN acc/loss: {:.4f}/{:.4f}' % (epoch + 1,
+                print('[Epoch {}/{}] TRAIN acc/loss: {:.4f}/{:.4f}'.format(epoch + 1,
                                                                        num_epochs,
                                                                        train_acc,
                                                                        train_loss))
@@ -137,7 +137,7 @@ class Solver(object):
             val_acc, val_loss = np.mean(val_scores), np.mean(val_losses)
             self.val_acc_history.append(val_acc)
             self.val_loss_history.append(val_loss)
-            writer.add_scalar('Loss/val', val_loss, iteration)
+            writer.add_scalar('Validation Loss', val_loss, iteration)
 
             if log_nth:
                 print('[Epoch {}/{}]     VAL acc/loss: {:.4f}/{:.4f}'.format(epoch + 1, 
