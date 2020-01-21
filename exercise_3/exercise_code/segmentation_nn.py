@@ -35,7 +35,6 @@ class SegmentationNN(nn.Module):
         #                             YOUR CODE                               #
         #######################################################################
         [N, C, H, W] = x.size()  # N = batch size, C = number of channels, H = height, W = width
-        # upscale network in order to achieve desired output dimensions (N, num_classes, H, W)
         # upsample = nn.Upsample(scale_factor= H * W, mode='bilinear', align_corners=True)
         x_inputs = x
         x = self.model_fcn(x)['out']
