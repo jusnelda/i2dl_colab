@@ -124,7 +124,7 @@ class Solver(object):
                 output = model.forward(inputs)
                 # loss
                 loss = self.loss_func(output, labels)
-                val_losses.append(val_loss.data.cpu().numpy())
+                val_losses.append(loss.data.cpu().numpy())
 
                 # Accuracy
                 _, pred = torch.max(output, 1)
