@@ -118,7 +118,7 @@ class Solver(object):
                 _, pred = torch.max(output, 1)
                 val_acc = np.mean((pred == labels).data.cpu().numpy())
                 val_accs.append(val_acc)
-
+            model.train()
             val_acc, val_loss = np.mean(val_accs), np.mean(val_losses)
             self.val_acc_history.append(val_acc)
             if val_acc > best_val_acc:
