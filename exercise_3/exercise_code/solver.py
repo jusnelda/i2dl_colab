@@ -130,7 +130,7 @@ class Solver(object):
                 _, pred = torch.max(output, 1)
                 targets_mask = labels >= 0
                 scores = np.mean((pred == labels)[targets_mask].data.cpu().numpy())
-                val_accs.append(scores)
+                val_scores.append(scores)
 
 
             model.train()
