@@ -128,7 +128,7 @@ class Solver(object):
 
                 # Accuracy
                 _, pred = torch.max(output, 1)
-                targets_mask = targets >= 0
+                targets_mask = labels >= 0
                 scores = np.mean((pred == labels)[targets_mask].data.cpu().numpy())
                 val_accs.append(scores)
 
