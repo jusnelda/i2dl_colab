@@ -68,20 +68,17 @@ class Solver(object):
         #   ...                                                               #
         #######################################################################
         writer = SummaryWriter()
-        num_iterations = num_epochs * iter_per_epoch
-        best_val_acc = 0.0
         for epoch in range(num_epochs):
 
             # T R A I N I N G
             for iteration, (inputs, labels) in enumerate(train_loader, 1):
                 inputs = inputs.to(device)
                 labels = labels.to(device)
+
                 # zero the parameter gradients
                 optim.zero_grad()
-                # with torch.set_grad_enabled(True):
                 # foward pass / prediction
                 output = model(inputs)
-                # print('Out Shape:', output.shape)
                 # loss
                 loss = self.loss_func(output, labels)
                 loss.backward()
@@ -89,10 +86,8 @@ class Solver(object):
                 optim.step()
 
                 self.train_loss_history.append(loss.data.cpu().numpy())
-                writer.add_scalar('Train Loss', self.train_loss_history[-1], iteration)
-                # t = epoch * iter_per_epoch + iteration
+                writer.add_scalar('Loss_Train', self.train_loss_history[-1], epoch)
                 # Maybe print training loss
-                # if t % log_nth == 0:
                 if log_nth and iteration % log_nth == 0:
                     last_log_nth_losses = self.train_loss_history[-log_nth:]
                     train_loss = np.mean(last_log_nth_losses)
@@ -116,7 +111,6 @@ class Solver(object):
             val_losses = []
             val_scores = []
             model.eval()
-            # with torch.no_grad():
             for inputs, labels in val_loader:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
@@ -137,21 +131,15 @@ class Solver(object):
             val_acc, val_loss = np.mean(val_scores), np.mean(val_losses)
             self.val_acc_history.append(val_acc)
             self.val_loss_history.append(val_loss)
-            writer.add_scalar('Validation Loss', val_loss, iteration)
+            writer.add_scalar('Loss_Validation', val_loss, epoch)
 
             if log_nth:
                 print('[Epoch {}/{}]     VAL acc/loss: {:.4f}/{:.4f}'.format(epoch + 1, 
                                                                              num_epochs, 
                                                                              val_acc, 
                                                                              val_loss))
-                print('-' * 30)
+                print('-' * 50)
 
-            # if val_acc > best_val_acc:
-            #     best_val_acc = val_acc
-            # print('[Epoch {}/{}]     TRAIN acc/loss: {:.4f}/{:.4f}'.format(epoch + 1, num_epochs, self.train_acc_history[-1], self.train_loss_history[-1]))
-            # print('[Epoch {}/{}]     VAL acc/loss: {:.4f}/{:.4f}'.format(epoch + 1, num_epochs, val_acc, self.val_loss_history[-1]))
-            # print('-' * 30)
-        # print('Best Accuracy: {:4f}'.format(best_val_acc))
         #######################################################################
         #                             END OF YOUR CODE                        #
         #######################################################################
