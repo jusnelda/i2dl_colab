@@ -78,21 +78,21 @@ class Solver(object):
                 labels = labels.to(device)
                 # zero the parameter gradients
                 optim.zero_grad()
-                with torch.set_grad_enabled(True):
-                    # foward pass / prediction
-                    output = model(inputs)
-                    # print('Out Shape:', output.shape)
-                    # loss
-                    train_loss = self.loss_func(output, labels)
-                    train_loss.backward()
-                    # optimize
-                    optim.step()
-                    self.train_loss_history.append(train_loss.data.cpu().numpy())
-                    writer.add_scalar('Loss/train', self.train_loss_history[-1], iteration)
-                    t = epoch * iter_per_epoch + iteration
-                    # Maybe print training loss
-                    if t % log_nth == 0:
-                        print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(t, num_iterations, self.train_loss_history[-1]))
+                # with torch.set_grad_enabled(True):
+                # foward pass / prediction
+                output = model(inputs)
+                # print('Out Shape:', output.shape)
+                # loss
+                train_loss = self.loss_func(output, labels)
+                train_loss.backward()
+                # optimize
+                optim.step()
+                self.train_loss_history.append(train_loss.data.cpu().numpy())
+                writer.add_scalar('Loss/train', self.train_loss_history[-1], iteration)
+                t = epoch * iter_per_epoch + iteration
+                # Maybe print training loss
+                if t % log_nth == 0:
+                    print('[Iteration {}/{}]    TRAIN loss: {:.4f}'.format(t, num_iterations, self.train_loss_history[-1]))
 
             # Accuracy per minibatch
             _, preds = torch.max(output, 1)
@@ -103,21 +103,21 @@ class Solver(object):
             # V A L I D A T I O N
             val_losses = []
             val_accs = []
-            #model.eval()
-            with torch.no_grad():
-                for inputs, labels in val_loader:
-                    inputs = inputs.to(device)
-                    labels = labels.to(device)
-                    # foward pass / prediction
-                    output = model(inputs)
-                    # loss
-                    val_loss = self.loss_func(output, labels)
-                    val_losses.append(val_loss.data.cpu().numpy())
+            model.eval()
+            # with torch.no_grad():
+            for inputs, labels in val_loader:
+                inputs = inputs.to(device)
+                labels = labels.to(device)
+                # foward pass / prediction
+                output = model(inputs)
+                # loss
+                val_loss = self.loss_func(output, labels)
+                val_losses.append(val_loss.data.cpu().numpy())
 
-                    # Accuracy
-                    _, pred = torch.max(output, 1)
-                    val_acc = np.mean((pred == labels).data.cpu().numpy())
-                    val_accs.append(val_acc)
+                # Accuracy
+                _, pred = torch.max(output, 1)
+                val_acc = np.mean((pred == labels).data.cpu().numpy())
+                val_accs.append(val_acc)
 
             val_acc, val_loss = np.mean(val_accs), np.mean(val_losses)
             self.val_acc_history.append(val_acc)
